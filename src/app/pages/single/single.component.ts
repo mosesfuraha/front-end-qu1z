@@ -1,12 +1,7 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  OnChanges,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { QuizQuestion } from '../../models/questions';
 import { QUESTIONS } from '../questions.data';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-single',
@@ -22,6 +17,9 @@ export class SingleComponent implements OnInit, OnChanges {
   isAnswered: boolean = false;
   correctAnswerIndex: number | null = null;
   showMessageError = false;
+  correctAnswersCount: number = 0;
+
+  constructor(private router: Router) {}
 
   ngOnInit() {
     this.loadQuestion();
@@ -30,6 +28,7 @@ export class SingleComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['topic'] && changes['topic'].currentValue) {
       this.currentQuestionIndex = 0; // Reset index on topic change
+      this.correctAnswersCount = 0; // Reset correct answers count
       this.loadQuestion();
     }
   }
@@ -62,6 +61,10 @@ export class SingleComponent implements OnInit, OnChanges {
       this.question?.answers.findIndex(
         (answer) => answer === this.question?.correctAnswer
       ) ?? null;
+
+    if (this.isAnswerCorrect) {
+      this.correctAnswersCount++;
+    }
   }
 
   nextQuestion() {
@@ -78,6 +81,11 @@ export class SingleComponent implements OnInit, OnChanges {
       ) {
         this.currentQuestionIndex++;
         this.loadQuestion();
+      } else {
+        // Navigate to the marks route when the quiz is completed
+        this.router.navigate(['/marks'], {
+          state: { score: this.correctAnswersCount },
+        });
       }
     }
   }
