@@ -1,0 +1,124 @@
+<div class="mx-auto p-4">
+  <div class="flex flex-col lg:flex-row mb-8 justify-between">
+    <div class="ml-10 mt-8 flex flex-col w-full lg:w-[50%]">
+      <div class="flex flex-col w-full">
+        <p
+          class="font-bold text-[1.5rem] lg:text-[2rem] text-[#3D4D66] leading-tight mt-2"
+        >
+          Question {{ currentQuestionIndex + 1 }} of 10
+        </p>
+        <h1 class="mt-4">
+          <span
+            class="text-base italic"
+            style="font-family: 'Rubik', sans-serif"
+          >
+            {{ question?.question }}
+          </span>
+        </h1>
+        <div
+          class="progress-bar-container w-full lg:w-[50%] bg-white rounded-2xl h-8 shadow-lg mt-4"
+        >
+          <div
+            class="progress-bar bg-[#6A1B9A] h-8 rounded-2xl"
+            [ngStyle]="{ width: ((currentQuestionIndex + 1) / 10) * 100 + '%' }"
+          ></div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col items-center w-full lg:w-[50%] mt-8 lg:mt-0">
+      <div
+        class="topic flex items-center shadow-lg rounded-2xl p-4 mb-4 w-full bg-white cursor-pointer"
+        *ngFor="let answer of question?.answers; let i = index"
+        (click)="selectAnswer(i)"
+        [ngClass]="{
+          'hover:border-purple-500 hover:border-2': !isAnswered,
+          'border-green-500': i === selectedAnswerIndex && isAnswerCorrect,
+          'border-red-500': i === selectedAnswerIndex && !isAnswerCorrect,
+          'border-2': i === selectedAnswerIndex,
+          'border-blue-500':
+            isAnswered && i === correctAnswerIndex && !isAnswerCorrect,
+          'cursor-not-allowed': isAnswered
+        }"
+        [ngStyle]="{ 'pointer-events': isAnswered ? 'none' : 'auto' }"
+      >
+        <div
+          class="topic-icon flex items-center justify-center mr-4 w-10 h-10 rounded-lg text-[#3d4d66] font-bold"
+          [ngClass]="{
+            'bg-[#26D782]': i === selectedAnswerIndex && isAnswerCorrect,
+            'bg-[#EE5454]': i === selectedAnswerIndex && !isAnswerCorrect,
+            'bg-[#F4F6FA]': !(i === selectedAnswerIndex && !isAnswerCorrect)
+          }"
+        >
+          {{ "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[i] }}
+        </div>
+        <div class="flex-grow text-[#3D4D66] font-medium text-base">
+          {{ answer }}
+        </div>
+        <div *ngIf="selectedAnswerIndex !== null && i === selectedAnswerIndex">
+          <svg
+            *ngIf="isAnswerCorrect"
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            fill="none"
+            viewBox="0 0 40 40"
+          >
+            <path
+              fill="#26D782"
+              d="M20 5a15 15 0 1 1 0 30 15 15 0 0 1 0-30Zm0 2.5a12.5 12.5 0 1 0 0 25 12.5 12.5 0 0 0 0-25Zm-1.875 15.105L25.3 15.41a1.25 1.25 0 0 1 1.915 1.593l-.145.174-8.06 8.08a1.25 1.25 0 0 1-1.595.148l-.175-.145-4.375-4.375a1.25 1.25 0 0 1 1.595-1.913l.175.143 3.49 3.49Z"
+            />
+          </svg>
+          <svg
+            *ngIf="!isAnswerCorrect"
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            fill="none"
+            viewBox="0 0 40 40"
+          >
+            <path
+              fill="#EE5454"
+              d="M20 5a15 15 0 1 1 0 30 15 15 0 0 1 0-30Zm0 2.5a12.5 12.5 0 1 0 0 25 12.5 12.5 0 0 0 0-25Zm-5.402 7.415.142-.175a1.25 1.25 0 0 1 1.595-.143l.175.143L20 18.233l3.49-3.493a1.25 1.25 0 0 1 1.595-.143l.175.143a1.25 1.25 0 0 1 .142 1.595l-.142.175L21.767 20l3.493 3.49a1.25 1.25 0 0 1 .142 1.595l-.142.175a1.25 1.25 0 0 1-1.595.142l-.175-.142L20 21.767l-3.49 3.493a1.25 1.25 0 0 1-1.595.142l-.175-.142a1.25 1.25 0 0 1-.143-1.595l.143-.175L18.233 20l-3.493-3.49a1.25 1.25 0 0 1-.143-1.595Z"
+            />
+          </svg>
+        </div>
+        <div *ngIf="isAnswered && i === correctAnswerIndex && !isAnswerCorrect">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            fill="none"
+            viewBox="0 0 40 40"
+          >
+            <path
+              fill="#26D782"
+              d="M20 5a15 15 0 1 1 0 30 15 15 0 0 1 0-30Zm0 2.5a12.5 12.5 0 1 0 0 25 12.5 12.5 0 0 0 0-25Zm-1.875 15.105L25.3 15.41a1.25 1.25 0 0 1 1.915 1.593l-.145.174-8.06 8.08a1.25 1.25 0 0 1-1.595.148l-.175-.145-4.375-4.375a1.25 1.25 0 0 1 1.595-1.913l.175.143 3.49 3.49Z"
+            />
+          </svg>
+        </div>
+      </div>
+      <button
+        class="shadow-lg rounded-2xl p-4 mb-4 w-full bg-[#6A1B9A] text-white text-base font-bold"
+        (click)="nextQuestion()"
+      >
+        {{ currentQuestionIndex < 9 ? "Next" : "Submit" }}
+      </button>
+      <div *ngIf="showMessageError" class="text-red-500 text-base mt-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="30"
+          height="30"
+          fill="none"
+          viewBox="0 0 40 40"
+          class="inline ml-2"
+        >
+          <path
+            fill="#EE5454"
+            d="M20 5a15 15 0 1 1 0 30 15 15 0 0 1 0-30Zm0 2.5a12.5 12.5 0 1 0 0 25 12.5 12.5 0 0 0 0-25Zm-5.402 7.415.142-.175a1.25 1.25 0 0 1 1.595-.143l.175.143L20 18.233l3.49-3.493a1.25 1.25 0 0 1 1.595-.143l.175.143a1.25 1.25 0 0 1 .142 1.595l-.142.175L21.767 20l3.493 3.49a1.25 1.25 0 0 1 .142 1.595l-.142.175a1.25 1.25 0 0 1-1.595.142l-.175-.142L20 21.767l-3.49 3.493a1.25 1.25 0 0 1-1.595.142l-.175-.142a1.25 1.25 0 0 1-.143-1.595l.143-.175L18.233 20l-3.493-3.49a1.25 1.25 0 0 1-.143-1.595Z"
+          />
+        </svg>
+        Please select an answer
+      </div>
+    </div>
+  </div>
+</div>

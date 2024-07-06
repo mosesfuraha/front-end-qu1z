@@ -1,0 +1,11 @@
+<div
+  [ngClass]="isToggled ? 'bg-custom-toggled' : 'bg-custom'"
+  class="min-h-screen"
+>
+  <div class="">
+    <div class="pt-10">
+      <app-header (toggleEvent)="onToggle($event)"></app-header>
+    </div>
+  </div>
+  <app-question></app-question>
+</div>
