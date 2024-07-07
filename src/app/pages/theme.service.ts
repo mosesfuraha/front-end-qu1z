@@ -1,40 +1,86 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
+import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ThemeService {
-  private isDarkTheme = false;
+  public currentTheme: 'light' | 'dark' = 'light';
+  private renderer: Renderer2;
+  private selectedTopic: {
+    name: string;
+    icon: SafeHtml;
+    bgColor: string;
+  } | null = null;
 
-  constructor() {
-    if (this.isBrowser()) {
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme) {
-        this.isDarkTheme = savedTheme === 'dark';
-        this.applyTheme();
+  constructor(
+    rendererFactory: RendererFactory2,
+    private sanitizer: DomSanitizer
+  ) {
+    this.renderer = rendererFactory.createRenderer(null, null);
+    this.loadTheme();
+    this.loadSelectedTopic();
+  }
+
+  toggleTheme() {
+    this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+    this.saveTheme();
+    if (this.currentTheme === 'dark') {
+      this.renderer.addClass(document.body, 'dark');
+    } else {
+      this.renderer.removeClass(document.body, 'dark');
+    }
+  }
+
+  getCurrentTheme() {
+    return this.currentTheme;
+  }
+
+  setSelectedTopic(topic: { name: string; icon: SafeHtml; bgColor: string }) {
+    this.selectedTopic = topic;
+    this.saveSelectedTopic();
+  }
+
+  getSelectedTopic() {
+    return this.selectedTopic;
+  }
+
+  private saveTheme() {
+    localStorage.setItem('theme', this.currentTheme);
+  }
+
+  private loadTheme() {
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme === 'dark' || storedTheme === 'light') {
+      this.currentTheme = storedTheme;
+      if (this.currentTheme === 'dark') {
+        this.renderer.addClass(document.body, 'dark');
       }
     }
   }
 
-  toggleTheme() {
-    this.isDarkTheme = !this.isDarkTheme;
-    this.applyTheme();
-  }
-
-  private applyTheme() {
-    const theme = this.isDarkTheme ? 'dark' : 'light';
-    document.documentElement.classList.remove('dark', 'light');
-    document.documentElement.classList.add(theme);
-    if (this.isBrowser()) {
-      localStorage.setItem('theme', theme);
+  private saveSelectedTopic() {
+    if (this.selectedTopic) {
+      localStorage.setItem(
+        'selectedTopic',
+        JSON.stringify({
+          name: this.selectedTopic.name,
+          icon: this.selectedTopic.icon,
+          bgColor: this.selectedTopic.bgColor,
+        })
+      );
     }
   }
 
-  get currentTheme() {
-    return this.isDarkTheme ? 'dark' : 'light';
-  }
-
-  private isBrowser(): boolean {
-    return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
+  private loadSelectedTopic() {
+    const storedTopic = localStorage.getItem('selectedTopic');
+    if (storedTopic) {
+      const parsedTopic = JSON.parse(storedTopic);
+      this.selectedTopic = {
+        name: parsedTopic.name,
+        icon: this.sanitizer.bypassSecurityTrustHtml(parsedTopic.icon), // Restore the safe content
+        bgColor: parsedTopic.bgColor,
+      };
+    }
   }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ThemeService } from '../theme.service';
 
 @Component({
   selector: 'app-marks',
@@ -8,8 +9,9 @@ import { Router } from '@angular/router';
 })
 export class MarksComponent implements OnInit {
   score: number | null = null;
+  selectedTopic = this.themeService.getSelectedTopic();
 
-  constructor(private router: Router) {
+  constructor(private router: Router, public themeService: ThemeService) {
     const navigation = this.router.getCurrentNavigation();
     const state = navigation?.extras.state as { score: number };
     this.score = state?.score ?? null;
@@ -18,6 +20,10 @@ export class MarksComponent implements OnInit {
   ngOnInit(): void {}
 
   playAgain() {
-    this.router.navigate(['/home']); 
+    this.router.navigate(['/home']);
+  }
+
+  toggleColor(): void {
+    this.themeService.toggleTheme();
   }
 }
