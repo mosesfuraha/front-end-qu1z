@@ -6,7 +6,10 @@
       height="24"
       fill="none"
       viewBox="0 0 24 24"
-      [ngClass]="{ 'text-purple-500': isToggled, 'text-gray-800': !isToggled }"
+      [ngClass]="{
+        'text-purple-500': themeService.currentTheme === 'dark',
+        'text-gray-800': themeService.currentTheme === 'light'
+      }"
     >
       <path
         fill="currentColor"
@@ -23,13 +26,13 @@
         xmlns="http://www.w3.org/2000/svg"
         (click)="toggleColor()"
         [ngClass]="{
-          'text-purple-500': isToggled,
-          'text-gray-800': !isToggled
+          'text-purple-500': themeService.currentTheme === 'dark',
+          'text-gray-800': themeService.currentTheme === 'light'
         }"
       >
         <rect width="40" height="20" rx="10" fill="currentColor" />
         <circle
-          [attr.cx]="isToggled ? '30' : '10'"
+          [attr.cx]="themeService.currentTheme === 'dark' ? '30' : '10'"
           cy="10"
           r="7"
           fill="white"
@@ -44,7 +47,10 @@
       height="24"
       fill="none"
       viewBox="0 0 24 24"
-      [ngClass]="{ 'text-purple-500': isToggled, 'text-gray-800': !isToggled }"
+      [ngClass]="{
+        'text-purple-500': themeService.currentTheme === 'dark',
+        'text-gray-800': themeService.currentTheme === 'light'
+      }"
     >
       <path
         fill="currentColor"

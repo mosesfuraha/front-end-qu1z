@@ -1,17 +1,18 @@
 import { Component, Output, EventEmitter } from '@angular/core';
+import { ThemeService } from '../theme.service';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css',
+  styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent {
-  isToggled: boolean = false;
-
   @Output() toggleEvent = new EventEmitter<boolean>();
 
+  constructor(public themeService: ThemeService) {}
+
   toggleColor() {
-    this.isToggled = !this.isToggled;
-    this.toggleEvent.emit(this.isToggled);
+    this.themeService.toggleTheme();
+    this.toggleEvent.emit(this.themeService.currentTheme === 'dark');
   }
 }

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { TOPICS } from '../topic.data';
 import { QUESTIONS } from '../questions.data';
+import { ThemeService } from '../theme.service';
 
 @Component({
   selector: 'app-question',
@@ -16,10 +17,17 @@ export class QuestionComponent {
   showSingle = false;
   selectedTopic: keyof typeof QUESTIONS | null = null;
 
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(
+    private sanitizer: DomSanitizer,
+    public themeService: ThemeService
+  ) {}
 
   showSingleComponent(topic: keyof typeof QUESTIONS): void {
     this.selectedTopic = topic;
     this.showSingle = true;
+  }
+
+  toggleColor(): void {
+    this.themeService.toggleTheme();
   }
 }
