@@ -1,5 +1,12 @@
-import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
+import {
+  Injectable,
+  Renderer2,
+  RendererFactory2,
+  Inject,
+  PLATFORM_ID,
+} from '@angular/core';
 import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -12,12 +19,15 @@ export class ThemeService {
     icon: SafeHtml;
     bgColor: string;
   } | null = null;
+  private isBrowser: boolean;
 
   constructor(
     rendererFactory: RendererFactory2,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    @Inject(PLATFORM_ID) private platformId: any
   ) {
     this.renderer = rendererFactory.createRenderer(null, null);
+    this.isBrowser = isPlatformBrowser(this.platformId);
     this.loadTheme();
     this.loadSelectedTopic();
   }
@@ -46,21 +56,25 @@ export class ThemeService {
   }
 
   private saveTheme() {
-    localStorage.setItem('theme', this.currentTheme);
+    if (this.isBrowser) {
+      localStorage.setItem('theme', this.currentTheme);
+    }
   }
 
   private loadTheme() {
-    const storedTheme = localStorage.getItem('theme');
-    if (storedTheme === 'dark' || storedTheme === 'light') {
-      this.currentTheme = storedTheme;
-      if (this.currentTheme === 'dark') {
-        this.renderer.addClass(document.body, 'dark');
+    if (this.isBrowser) {
+      const storedTheme = localStorage.getItem('theme');
+      if (storedTheme === 'dark' || storedTheme === 'light') {
+        this.currentTheme = storedTheme;
+        if (this.currentTheme === 'dark') {
+          this.renderer.addClass(document.body, 'dark');
+        }
       }
     }
   }
 
   private saveSelectedTopic() {
-    if (this.selectedTopic) {
+    if (this.isBrowser && this.selectedTopic) {
       localStorage.setItem(
         'selectedTopic',
         JSON.stringify({
@@ -73,14 +87,16 @@ export class ThemeService {
   }
 
   private loadSelectedTopic() {
-    const storedTopic = localStorage.getItem('selectedTopic');
-    if (storedTopic) {
-      const parsedTopic = JSON.parse(storedTopic);
-      this.selectedTopic = {
-        name: parsedTopic.name,
-        icon: this.sanitizer.bypassSecurityTrustHtml(parsedTopic.icon), // Restore the safe content
-        bgColor: parsedTopic.bgColor,
-      };
+    if (this.isBrowser) {
+      const storedTopic = localStorage.getItem('selectedTopic');
+      if (storedTopic) {
+        const parsedTopic = JSON.parse(storedTopic);
+        this.selectedTopic = {
+          name: parsedTopic.name,
+          icon: this.sanitizer.bypassSecurityTrustHtml(parsedTopic.icon), // Restore the safe content
+          bgColor: parsedTopic.bgColor,
+        };
+      }
     }
   }
 }
