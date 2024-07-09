@@ -19,7 +19,7 @@ You can select your answer for each question, and the application will provide i
 
 ## Accessing the Quiz
 
-Visit [Frontend Quiz](https://frontendquizmoses.netlify.app.) to start the quiz. The app is accessible from any modern web browser and does not require any installation.
+Visit [Frontend Quiz](https://frontendquizmoses.netlify.app) to start the quiz. The app is accessible from any modern web browser and does not require any installation.
 
 ## Development server
 
