@@ -55,7 +55,7 @@ export class ThemeService {
     return this.selectedTopic;
   }
 
-  private saveTheme() {
+   saveTheme() {
     if (this.isBrowser) {
       localStorage.setItem('theme', this.currentTheme);
     }
@@ -93,7 +93,7 @@ export class ThemeService {
         const parsedTopic = JSON.parse(storedTopic);
         this.selectedTopic = {
           name: parsedTopic.name,
-          icon: this.sanitizer.bypassSecurityTrustHtml(parsedTopic.icon), // Restore the safe content
+          icon: this.sanitizer.bypassSecurityTrustHtml(parsedTopic.icon), 
           bgColor: parsedTopic.bgColor,
         };
       }
