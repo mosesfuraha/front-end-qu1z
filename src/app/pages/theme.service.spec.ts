@@ -59,4 +59,19 @@ describe('ThemeService', () => {
     expect(service.getCurrentTheme()).toBe('light');
   });
 
+  it('should save theme to localStorage when toggled', () => {
+    service.currentTheme = 'light';
+    service.toggleTheme();
+    expect(localStorage.getItem('theme')).toBe('dark');
+    service.toggleTheme();
+    expect(localStorage.getItem('theme')).toBe('light');
+  });
+
+  it('should load theme from localStorage', () => {
+    localStorage.setItem('theme', 'dark');
+    const loadThemeSpy = jest.spyOn(service as any, 'loadTheme');
+    expect(loadThemeSpy).toHaveBeenCalled();
+    expect(service.currentTheme).toBe('dark');
+    expect(renderer.addClass).toHaveBeenCalledWith(document.body, 'dark');
+  });
 });
